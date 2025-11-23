@@ -44,6 +44,25 @@ class Tree {
       temp.right = new Node(value);
     }
   }
+
+  find(value) {
+    if (this.root.data === value) return this.root;
+
+    let temp = this.root;
+    while (temp.left !== null || temp.right !== null) {
+      if (value < temp.data && temp.left !== null) {
+        temp = temp.left;
+      } else if (value >= temp.data && temp.right !== null) {
+        temp = temp.right;
+      }
+    }
+
+    if (value === temp.data) {
+      return temp;
+    } else {
+      return "Node not found!";
+    }
+  }
 }
 
 // function to visualize the tree
@@ -63,5 +82,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 let arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(arr);
 prettyPrint(tree.root);
-tree.insert(10);
-prettyPrint(tree.root);
+console.log(tree.find(10));
