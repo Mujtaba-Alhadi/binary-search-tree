@@ -45,6 +45,30 @@ class Tree {
     }
   }
 
+  delete(value, curNode = this.root) {
+    if (curNode === null) return curNode;
+
+    if (curNode.data > value) {
+      curNode.left = this.delete(value, curNode.left);
+    } else if (curNode.data < value) {
+      curNode.right = this.delete(value, curNode.right);
+    } else {
+      // Node with 0 or 1 child
+      if (curNode.left === null) return curNode.right;
+      if (curNode.right === null) return curNode.left;
+
+      // Node with 2 children
+      // Find successor (minimum value in the right subtree)
+      let successor = curNode.right;
+      while (successor !== null && successor.left !== null) {
+        successor = successor.left;
+      }
+      curNode.data = successor.data;
+      curNode.right = this.delete(successor.data, curNode.right);
+    }
+    return curNode;
+  }
+
   find(value) {
     if (this.root.data === value) return this.root;
 
@@ -81,4 +105,5 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 let arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(arr);
 prettyPrint(tree.root);
-console.log(tree.find(4));
+tree.delete(8);
+prettyPrint(tree.root);
