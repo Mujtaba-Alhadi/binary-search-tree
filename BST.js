@@ -83,8 +83,18 @@ class Tree {
         return temp;
       }
     }
-
     return "Node not found!";
+  }
+
+  levelOrderTraversal(queue = [this.root]) {
+    let arr = [];
+    while (queue[0]) {
+      arr.push(queue[0].data);
+      if (queue[0].left !== null) queue.push(queue[0].left);
+      if (queue[0].right !== null) queue.push(queue[0].right);
+      queue.shift();
+    }
+    return arr;
   }
 }
 
@@ -105,5 +115,4 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 let arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(arr);
 prettyPrint(tree.root);
-tree.delete(8);
-prettyPrint(tree.root);
+console.log(tree.levelOrderTraversal());
