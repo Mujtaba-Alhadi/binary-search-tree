@@ -96,6 +96,36 @@ class Tree {
     }
     return arr;
   }
+
+  preOrderTraversal(root = this.root, arr = []) {
+    if (root === null) return;
+
+    arr.push(root.data);
+    this.preOrderTraversal(root.left, arr);
+    this.preOrderTraversal(root.right, arr);
+
+    return arr;
+  }
+
+  inOrderTraversal(root = this.root, arr = []) {
+    if (root === null) return;
+
+    this.inOrderTraversal(root.left, arr);
+    arr.push(root.data);
+    this.inOrderTraversal(root.right, arr);
+
+    return arr;
+  }
+
+  postOrderTraversal(root = this.root, arr = []) {
+    if (root === null) return;
+
+    this.postOrderTraversal(root.left, arr);
+    this.postOrderTraversal(root.right, arr);
+    arr.push(root.data);
+
+    return arr;
+  }
 }
 
 // function to visualize the tree
@@ -115,4 +145,6 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
 let arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(arr);
 prettyPrint(tree.root);
-console.log(tree.levelOrderTraversal());
+console.log(tree.preOrderTraversal());
+console.log(tree.inOrderTraversal());
+console.log(tree.postOrderTraversal());
