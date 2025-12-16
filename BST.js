@@ -1,8 +1,8 @@
 class Node {
-  constructor(data, left = null, right = null) {
+  constructor(data) {
     this.data = data;
-    this.left = left;
-    this.right = right;
+    this.left = null;
+    this.right = null;
   }
 }
 
@@ -28,20 +28,21 @@ class Tree {
       this.root = new Node(value);
       return;
     }
-
     let temp = this.root;
-    while (temp.left !== null || temp.right !== null) {
-      if (value < temp.data && temp.left !== null) {
+    while (true) {
+      if (value < temp.data) {
+        if (temp.left === null) {
+          temp.left = new Node(value);
+          break;
+        }
         temp = temp.left;
-      } else if (value >= temp.data && temp.right !== null) {
+      } else {
+        if (temp.right === null) {
+          temp.right = new Node(value);
+          break;
+        }
         temp = temp.right;
       }
-    }
-
-    if (value < temp.data) {
-      temp.left = new Node(value);
-    } else {
-      temp.right = new Node(value);
     }
   }
 
@@ -69,21 +70,17 @@ class Tree {
     return curNode;
   }
 
-  find(value) {
-    if (this.root.data === value) return this.root;
+  find(value, root = this.root) {
+    while (root !== null) {
+      if (root.data === value) return root;
 
-    let temp = this.root;
-    while (temp.left !== null || temp.right !== null) {
-      if (value < temp.data && temp.left !== null) {
-        temp = temp.left;
-      } else if (value >= temp.data && temp.right !== null) {
-        temp = temp.right;
-      }
-      if (value === temp.data) {
-        return temp;
+      if (value < root.data) {
+        root = root.left;
+      } else {
+        root = root.right;
       }
     }
-    return "Node not found!";
+    return null;
   }
 
   levelOrderTraversal(queue = [this.root]) {
@@ -126,6 +123,59 @@ class Tree {
 
     return arr;
   }
+
+  depth(value, root = this.root) {
+    let counter = 0;
+    while (root !== null) {
+      if (root.data === value) return counter;
+
+      if (value < root.data) {
+        root = root.left;
+      } else {
+        root = root.right;
+      }
+      counter++;
+    }
+    return null;
+  }
+
+  height(value) {
+    let node = this.find(value);
+
+    function nodeHeight(root) {
+      if (root === null) return -1;
+      let rHeight = nodeHeight(root.right);
+      let lHeight = nodeHeight(root.left);
+      return Math.max(rHeight, lHeight) + 1;
+    }
+
+    return nodeHeight(node);
+  }
+
+  isBalanced(root = this.root) {
+    function checkHeight(node) {
+      if (node === null) return 0;
+      let rHeight = checkHeight(node.right);
+      if (rHeight === -1) return -1;
+      let lHeight = checkHeight(node.left);
+      if (lHeight === -1) return -1;
+      if (Math.abs(rHeight - lHeight) > 1) {
+        return -1;
+      }
+      return Math.max(rHeight, lHeight) + 1;
+    }
+    if (checkHeight(root) === -1) return false;
+    else return true;
+  }
+
+  rebalance() {
+    if (this.isBalanced()) {
+      console.log("Tree is already balanced");
+      return;
+    }
+    this.array = this.inOrderTraversal();
+    this.root = this.buildTree(this.array);
+  }
 }
 
 // function to visualize the tree
@@ -142,9 +192,12 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
+// test
 let arr = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const tree = new Tree(arr);
 prettyPrint(tree.root);
-console.log(tree.preOrderTraversal());
-console.log(tree.inOrderTraversal());
-console.log(tree.postOrderTraversal());
+tree.insert(10);
+tree.insert(11);
+prettyPrint(tree.root);
+tree.rebalance();
+prettyPrint(tree.root);
